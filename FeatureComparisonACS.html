@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Complete ACS Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --aprecomm-purple: #6a1b9a;
+            --aprecomm-blue: #1e88e5;
+            --aprecomm-dark: #1e2a3a;
+            --accent-green: #00c853;
+            --gap-red: #d32f2f;
+            --bg-light: #f4f7fc;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--aprecomm-dark); margin: 0; padding: 20px; font-size: 14px; line-height: 1.45; }
+        .container { max-width: 1600px; margin: 0 auto; background: var(--white); border-radius: 24px; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.12); border-top: 6px solid var(--aprecomm-purple); overflow: hidden; padding: 28px 32px 40px; }
+        .top-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid var(--border-light); }
+        .title-section h1 { font-size: 28px; font-weight: 800; color: var(--aprecomm-purple); letter-spacing: -0.3px; margin-bottom: 6px; }
+        .title-section p { color: #5a6874; font-size: 14px; }
+        .author-section { text-align: right; }
+        .author-section strong { color: var(--aprecomm-purple); font-size: 15px; display: block; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 24px; background: #f1f5f9; padding: 8px 16px; border-radius: 60px; flex-wrap: wrap; gap: 12px; }
+        .tab-nav { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn { border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; background: white; color: #2c3e50; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .btn-tab.active { background: var(--aprecomm-purple); color: white; box-shadow: 0 4px 8px rgba(106,27,154,0.2); }
+        .content-section { display: none; animation: fadeIn 0.25s ease; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+        .notification { background: #ffefef; border-left: 6px solid var(--gap-red); padding: 16px 20px; border-radius: 16px; margin-bottom: 28px; }
+        .notification h4 { font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gap-red); margin-bottom: 6px; }
+        .table-wrapper { overflow-x: auto; margin: 28px 0 20px; border-radius: 20px; border: 1px solid var(--border-light); }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1400px; }
+        th { background: #f8fafd; padding: 14px 12px; border-bottom: 1px solid var(--border-light); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: #1f3a4b; }
+        .th-aprecomm { background: var(--aprecomm-purple) !important; color: white !important; }
+        .th-beegol { background: #e0f2fe !important; color: #0284c7 !important; }
+        .th-anlix { background: #ffedd5 !important; color: #92400e !important; }
+        .th-tier3 { background: #fee2e2 !important; color: #b91c1c !important; }
+        td { padding: 14px 12px; border-bottom: 1px solid #edf2f7; vertical-align: top; background-color: white; }
+        .feature-cat td { background: #f9fafc; font-weight: 800; color: var(--aprecomm-blue); font-size: 12px; border-top: 2px solid #e2e8f0; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; }
+        .highlight-aprecomm { background-color: #faf5ff; border-left: 3px solid var(--aprecomm-purple); font-weight: 500; }
+        .highlight-beegol { background-color: #f0f9ff; border-left: 3px solid #0ea5e9; font-weight: 500; }
+        .highlight-anlix { background-color: #fffaf0; border-left: 3px solid #f39c12; font-weight: 500; }
+        .check { color: var(--accent-green); font-weight: 700; font-size: 13px; }
+        .gap { color: var(--gap-red); font-weight: 700; }
+        .gap-text { color: var(--gap-red); font-size: 11px; font-style: italic; }
+        .info-card { background: #fbfdff; border-left: 5px solid var(--aprecomm-blue); padding: 20px 24px; margin-bottom: 28px; border-radius: 20px; border: 1px solid #eef2f9; }
+        .legend-box { background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); border-radius: 24px; margin-top: 40px; padding: 24px 28px; border: 1px solid #e2edf7; }
+        .legend-title { font-size: 20px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; border-left: 5px solid var(--aprecomm-purple); padding-left: 16px; color: var(--aprecomm-dark); }
+        .legend-grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; }
+        .legend-card { flex: 1; min-width: 220px; background: white; border-radius: 20px; padding: 18px 20px; border-top: 4px solid; }
+        .legend-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+        .legend-card ul { margin-top: 10px; padding-left: 18px; font-size: 12.5px; color: #4a5b6e; }
+        .tier1-border { border-top-color: #1e88e5; background: #f5faff; }
+        .tier2-border { border-top-color: #f39c12; background: #fffaf0; }
+        .tier3-border { border-top-color: #e67e22; background: #fff6f0; }
+        .tier-note { margin-top: 20px; padding-top: 16px; border-top: 1px dashed #cbd5e1; font-size: 13px; text-align: center; background: #f9fbfd; border-radius: 16px; padding: 16px; }
+        
+        @media (max-width: 800px) { 
+            .legend-grid { flex-direction: column; grid-template-columns: 1fr; } 
+        }
+        .mini-legend { display: flex; gap: 20px; background: #f1f5f9; padding: 8px 16px; border-radius: 40px; margin-bottom: 20px; font-size: 12px; width: fit-content; }
+        .mini-legend span { font-weight: 700; margin-right: 4px; }
+        .positive { color: var(--accent-green); }
+        .negative { color: var(--gap-red); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-header">
+        <div class="title-section">
+            <h1>ACS Comparison</h1>
+        </div>
+        <div class="author-section">
+            <strong>Denis Fernandes</strong>
+            <span>Customer Solutions Manager</span>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="tab-nav">
+            <button class="btn btn-tab active" data-tab="anlixcompare">⚙️ Pure ACS (No AI)</button>
+            <button class="btn btn-tab" data-tab="vcscore">🧠 VCS/VWE (With AI)</button>
+            <button class="btn btn-tab" data-tab="matrix">📊 Protocol Comparison</button>
+        </div>
+    </div>
+
+    <div id="anlixcompare" class="content-section active">
+        <div class="notification">
+            <h4>📌 ACS CORE Comparison (Embedded AI agents excluded)</h4>
+            <p>This table exclusively compares the capabilities of the <strong>pure Auto Configuration Server (ACS)</strong> of each platform. All functionalities of embedded AI agents (like Aprecomm VWE or Beegol Agent) have been removed. Advantages (+) and disadvantages (-) are highlighted in each cell.</p>
+        </div>
+        <div class="mini-legend">
+            <span><span class="positive">(+) Advantage</span> | <span class="negative">(-) Disadvantage</span></span>
+            <span>✅ Available | ❌ Not available | ⚠️ Partial/Limited</span>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="16%">Core ACS Feature</th>
+                        <th class="th-aprecomm" width="14%">Aprecomm VCS (Pure ACS)</th>
+                        <th class="th-beegol" width="14%">Beegol (Pure ACS)</th>
+                        <th class="th-anlix" width="14%">Tier 2 – Anlix (Flashman)</th>
+                        <th class="th-tier3" width="14%">Tier 3 – IXC</th>
+                        <th class="th-tier3" width="14%">Tier 3 – Made4Graph</th>
+                        <th class="th-tier3" width="14%">Tier 3 – INT6 RemoteISP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Policy Engine (Bulk Configuration)</strong><br>Application of multiple configs based on rules and groups</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> <strong>Native Policies</strong><br><span class="positive">(+) Continuous and dynamic application based on logical tags/groups.</span><br><span class="negative">(-) Requires initial rule configuration.</span></td>
+                        <td><span class="gap">⚠️</span> <strong>Scheduled Profiles</strong><br><span class="positive">(+) Good for routines and groups.</span><br><span class="negative">(-) Not a continuous dynamic engine.</span></td>
+                        <td><span class="check">✔</span> <strong>Profiles and Campaigns</strong><br><span class="positive">(+) Intuitive visual interface to apply bulk routines.</span><br><span class="negative">(-) Based on jobs/schedules instead of a continuous engine.</span></td>
+                        <td><span class="gap">⚠️</span> <strong>ERP Routines</strong><br><span class="positive">(+) Centralized directly in the customer base.</span><br><span class="negative">(-) Basic, mostly focused on block/unblock and provisioning.</span></td>
+                        <td><span class="gap">⚠️</span> <strong>Bulk Templates</strong><br><span class="positive">(+) Easy application by router profiles.</span><br><span class="negative">(-) Lacks conditional policies based on network events.</span></td>
+                        <td><span class="check">✔</span> <strong>TR-069 Scripts</strong><br><span class="positive">(+) Extremely flexible for experienced technicians.</span><br><span class="negative">(-) Complex to manage and maintain at a very high scale.</span></td>
+                    </tr>
+                    <tr><td><strong>Supported Protocols</strong><br>Communication with CPEs</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> <strong>TR-069 + TR-369 (USP)</strong><br><span class="positive">(+) Continuous streaming, near real-time telemetry.</span><br><span class="negative">(-) Requires CPEs with USP.</span></td>
+                        <td><span class="check">✔</span> <strong>TR-069 + Basic USP</strong><br><span class="positive">(+) Modernizing stack for newer CPEs.</span><br><span class="negative">(-) USP implementation still maturing.</span></td>
+                        <td><span class="check">✔</span> <strong>TR-069 (Mature CWMP)</strong><br><span class="positive">(+) Excellent compatibility with existing CPEs.</span><br><span class="negative">(-) No TR-369/USP support.</span></td>
+                        <td><span class="check">✔</span> <strong>Basic TR-069</strong><br><span class="positive">(+) Sufficient for basic native ZTP.</span><br><span class="negative">(-) No TR-369.</span></td>
+                        <td><span class="check">✔</span> <strong>TR-069</strong><br><span class="positive">(+) Focus on fast provisioning.</span><br><span class="negative">(-) No TR-369.</span></td>
+                        <td><span class="check">✔</span> <strong>Full TR-069</strong><br><span class="positive">(+) Robust TR-069 engine.</span><br><span class="negative">(-) No TR-369.</span></td>
+                    </tr>
+                    <tr><td><strong>Data Model</strong><br>TR-181 vs TR-098</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> <strong>Full TR-181 Device:2</strong><br><span class="positive">(+) Deep access to Wi-Fi, Ethernet, QoS.</span><br><span class="negative">(-) Requires technical knowledge.</span></td>
+                        <td><span class="check">✔</span> <strong>High TR-181 coverage</strong><br><span class="positive">(+) Good visibility of modern parameters.</span><br><span class="negative">(-) Some proprietary nodes require manual mapping.</span></td>
+                        <td><span class="check">✔</span> <strong>High TR-181 coverage</strong><br><span class="positive">(+) Mature support for main objects.</span><br><span class="negative">(-) Custom parameters require mapping.</span></td>
+                        <td><span class="gap">⚠️</span> <strong>TR-098 / Limited TR-181</strong><br><span class="positive">(+) Fast for legacy devices.</span><br><span class="negative">(-) Missing modern parameters.</span></td>
+                        <td><span class="check">✔</span> <strong>Good TR-181 coverage</strong><br><span class="positive">(+) Great visual mapping.</span><br><span class="negative">(-) Some advanced objects are missing.</span></td>
+                        <td><span class="check">✔</span> <strong>Full TR-181 Support</strong><br><span class="positive">(+) Deep access to the parameter tree.</span><br><span class="negative">(-) Interface can be complex to navigate.</span></td>
+                    </tr>
+                    <tr><td><strong>Provisioning & ZTP</strong><br>Zero-Touch, templates</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Templates, ZTP, automatic rollback<br><span class="positive">(+) Robust, prevents CPE bricking.</span><br><span class="negative">(-) Initial learning curve.</span></td>
+                        <td><span class="check">✔</span> Dynamic Templates<br><span class="positive">(+) Easy visual onboarding.</span><br><span class="negative">(-) Rollback relies on manual intervention.</span></td>
+                        <td><span class="check">✔</span> Groups, models, fast onboarding<br><span class="positive">(+) User-friendly profile creation.</span><br><span class="negative">(-) Manual rollback.</span></td>
+                        <td><span class="check">✔</span> <strong>Native IXC ZTP</strong><br><span class="positive">(+) Perfect synergy if using IXC ERP.</span><br><span class="negative">(-) Difficult to adapt outside the ecosystem.</span></td>
+                        <td><span class="check">✔</span> Dynamic templates<br><span class="positive">(+) Very fast onboarding interface.</span><br><span class="negative">(-) Rollback is manual.</span></td>
+                        <td><span class="check">✔</span> Basic files/templates<br><span class="positive">(+) Functional and reliable.</span><br><span class="negative">(-) Less dynamic than competitors.</span></td>
+                    </tr>
+                    <tr><td><strong>Firmware Campaigns</strong><br>Bulk update, rollback</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Scheduling, validation, auto rollback<br><span class="positive">(+) Mass security, reduces brick risk.</span><br><span class="negative">(-) Requires planning.</span></td>
+                        <td><span class="check">✔</span> Scheduled Updates<br><span class="positive">(+) Reliable execution and reporting.</span><br><span class="negative">(-) Manual rollback process.</span></td>
+                        <td><span class="check">✔</span> Scheduler, groups, manual rollback<br><span class="positive">(+) Detailed success/failure reports.</span><br><span class="negative">(-) Manual rollback.</span></td>
+                        <td><span class="gap">⚠️</span> Simple list update<br><span class="positive">(+) Low-cost operation.</span><br><span class="negative">(-) No auto rollback – mass brick risk.</span></td>
+                        <td><span class="check">✔</span> Bulk updates<br><span class="positive">(+) Good visual reports.</span><br><span class="negative">(-) Manual rollback.</span></td>
+                        <td><span class="check">✔</span> Scheduled updates<br><span class="positive">(+) Reliable execution.</span><br><span class="negative">(-) Basic reporting interface.</span></td>
+                    </tr>
+                    <tr><td><strong>Remote Diagnostics</strong><br>Ping, traceroute, TR-143</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Multi-thread TR-143, ping, path trace<br><span class="positive">(+) Standard advanced L2/L3 tests.</span><br><span class="negative">(-) Some CPEs need specific TR-143.</span></td>
+                        <td><span class="check">✔</span> Ping, Trace, TR-143<br><span class="positive">(+) Standard tools available in UI.</span><br><span class="negative">(-) Visualization is somewhat basic.</span></td>
+                        <td><span class="check">✔</span> Ping, traceroute, diagnostic scripts<br><span class="positive">(+) Flexible for custom tests.</span><br><span class="negative">(-) Speedtest depends on external server.</span></td>
+                        <td><span class="gap">✖</span> Only ping and reboot<br><span class="positive">(+) Very simple.</span><br><span class="negative">(-) Total lack of advanced tools.</span></td>
+                        <td><span class="gap">⚠️</span> Ping, visual interface status<br><span class="positive">(+) Easy reading for L1.</span><br><span class="negative">(-) No TR-143 speed tests.</span></td>
+                        <td><span class="check">✔</span> Ping, Traceroute, TR-143<br><span class="positive">(+) Good tools for L2 technicians.</span><br><span class="negative">(-) No advanced path trace visualization.</span></td>
+                    </tr>
+                    <tr><td><strong>Basic Wi-Fi Configuration</strong><br>SSID, channel, password</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Full control via TR-181<br><span class="positive">(+) Advanced support for manual steering.</span><br><span class="negative">(-) Less intuitive interface.</span></td>
+                        <td><span class="check">✔</span> Visual Dashboard<br><span class="positive">(+) Intuitive for basic L1 changes.</span><br><span class="negative">(-) Advanced configs are hidden.</span></td>
+                        <td><span class="check">✔</span> Visual config for SSID, channel<br><span class="positive">(+) Very easy for field technicians.</span><br><span class="negative">(-) Steering requires extra knowledge.</span></td>
+                        <td><span class="check">✔</span> Change SSID/Password<br><span class="positive">(+) Simple and native in ERP.</span><br><span class="negative">(-) No advanced steering configs.</span></td>
+                        <td><span class="check">✔</span> Visual SSID/Channel Dashboard<br><span class="positive">(+) Extremely intuitive.</span><br><span class="negative">(-) Requires manual adjustment.</span></td>
+                        <td><span class="check">✔</span> Advanced TR-069 configuration<br><span class="positive">(+) Granular access to parameters.</span><br><span class="negative">(-) Not L1 friendly.</span></td>
+                    </tr>
+                    <tr><td><strong>Usability for Level 1 (L1)</strong><br>Easy use without technical knowledge</td>
+                        <td class="highlight-aprecomm"><span class="gap">⚠️</span> Technical interface<br><span class="positive">(+) Powerful for L3.</span><br><span class="negative">(-) Requires specialized training for L1.</span></td>
+                        <td><span class="check">✔</span> Modern Dashboards<br><span class="positive">(+) Low learning curve.</span><br><span class="negative">(-) Relies heavily on visual data without agent.</span></td>
+                        <td><span class="check">✔</span> Flashboard (scores, geo maps)<br><span class="positive">(+) Drastically reduces MTTR.</span><br><span class="negative">(-) Advanced functions require L2.</span></td>
+                        <td><span class="gap">⚠️</span> Parameter lists<br><span class="positive">(+) Familiar for IXC users.</span><br><span class="negative">(-) No visual abstractions.</span></td>
+                        <td><span class="check">✔</span> Modern visual dashboards<br><span class="positive">(+) Reduces MTTR, highly visual.</span><br><span class="negative">(-) Lacks AI recommendations.</span></td>
+                        <td><span class="gap">⚠️</span> Technical interface<br><span class="positive">(+) Fast execution for L2.</span><br><span class="negative">(-) Difficult for L1 operators.</span></td>
+                    </tr>
+                    <tr><td><strong>ERP Integrations</strong><br>Sankhya, Totvs, Custom, etc.</td>
+                        <td class="highlight-aprecomm"><span class="gap">⚠️</span> REST API, no ready-made connectors<br><span class="positive">(+) Total flexibility.</span><br><span class="negative">(-) Needs internal development.</span></td>
+                        <td><span class="gap">⚠️</span> API-First Approach<br><span class="positive">(+) Flexible integration.</span><br><span class="negative">(-) Lacks broad native BR ERP hooks.</span></td>
+                        <td class="highlight-anlix"><span class="check">✔</span> Native integration (BR ERPs)<br><span class="positive">(+) Plug-and-play.</span><br><span class="negative">(-) Depends on the ERP version.</span></td>
+                        <td><span class="check">✔</span> <strong>Native IXC</strong><br><span class="positive">(+) Perfect ecosystem synergy.</span><br><span class="negative">(-) Tied to the IXC ERP.</span></td>
+                        <td><span class="check">✔</span> Native integrations<br><span class="positive">(+) Broad support for BR ERPs.</span><br><span class="negative">(-) Depends on API stability.</span></td>
+                        <td><span class="check">✔</span> Native INT6<br><span class="positive">(+) Perfect synergy with INT6.</span><br><span class="negative">(-) Custom development for others.</span></td>
+                    </tr>
+                    <tr><td><strong>Chatbot Integration</strong><br>Self-service via WhatsApp/Telegram</td>
+                        <td class="highlight-aprecomm"><span class="gap">⚠️</span> <strong>Via REST API</strong><br><span class="positive">(+) Freedom for any bot.</span><br><span class="negative">(-) No out-of-the-box native module.</span></td>
+                        <td><span class="gap">⚠️</span> <strong>API-First</strong><br><span class="positive">(+) Easy connection for devs.</span><br><span class="negative">(-) Requires external middleware.</span></td>
+                        <td class="highlight-anlix"><span class="check">✔</span> <strong>Native Module</strong><br><span class="positive">(+) Ready-made actions (reset, status, password).</span><br><span class="negative">(-) Closed flows from Anlix.</span></td>
+                        <td><span class="check">✔</span> <strong>Opa! Suite</strong><br><span class="positive">(+) Perfect within the IXC ecosystem.</span><br><span class="negative">(-) Depends on Opa module subscription.</span></td>
+                        <td><span class="gap">⚠️</span> <strong>Via API</strong><br><span class="positive">(+) Good documentation for bots.</span><br><span class="negative">(-) Not embedded in the interface.</span></td>
+                        <td><span class="gap">✖</span> <strong>No native support</strong><br><span class="positive">(+) Purely technical focus on CPE.</span><br><span class="negative">(-) Requires complex development.</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="info-card">
+            <h4>🎯 Conclusion – Pure ACS (No Embedded Agent)</h4>
+            <p><strong>✅ Aprecomm VCS</strong> leads in modernity (TR-369 USP), mass management (Policy Engine), and advanced diagnostics (TR-143). <span class="negative">Disadvantage:</span> less friendly usability for L1 and the need for custom integration with Brazilian ERPs.<br>
+            <strong>✅ Beegol</strong> is a strong modern contender with good visual dashboards for L1, though slightly behind Anlix in pure native integrations for the local market without its agent active.<br>
+            <strong>✅ Anlix (Flashman)</strong> stands out for exceptional usability for L1 and native integrations with ERPs in Brazil. <span class="negative">Disadvantage:</span> based only on TR-069 (polling), no automatic rollback.<br>
+            <strong>⚠️ Tier 3 (IXC/Made4Graph/INT6)</strong> offers cost-effective solutions for ISPs. <strong>IXC</strong> and <strong>INT6</strong> are perfect if you already use their respective ERPs, while <strong>Made4Graph</strong> offers superior UI/UX for L1, although all lack advanced protocols (TR-369) and massive scalability without bottlenecks.</p>
+        </div>
+    </div>
+
+    <div id="vcscore" class="content-section">
+        <div class="notification">
+            <h4>🧠 Artificial Intelligence (Embedded Agent) Comparison</h4>
+            <p>Complete analysis containing the ACS Core functionalities AND the respective embedded Edge AI agents. Platforms like Aprecomm and Beegol leverage software installed on the CPE to generate advanced telemetry. Other platforms lack equivalent embedded resources, depending on reactive or manual polling processes.</p>
+        </div>
+        <div class="mini-legend">
+            <span><span class="positive">(+) Advantage</span> | <span class="negative">(-) Disadvantage</span></span>
+            <span>✅ Available | ❌ Not available | ⚠️ Partial/Limited</span>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="16%">Full Feature (Core + Agent)</th>
+                        <th class="th-aprecomm" width="14%">Aprecomm (VCS + VWE)</th>
+                        <th class="th-beegol" width="14%">Beegol (With Agent)</th>
+                        <th class="th-anlix" width="14%">Tier 2 – Anlix (Flashman)</th>
+                        <th class="th-tier3" width="14%">Tier 3 – IXC</th>
+                        <th class="th-tier3" width="14%">Tier 3 – Made4Graph</th>
+                        <th class="th-tier3" width="14%">Tier 3 – INT6 RemoteISP</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr class="feature-cat"><td colspan="7">🧠 Artificial Intelligence & Automation (Edge Agent Capabilities)</td></tr>
+                    <tr><td><strong>Predictive CPE Maintenance</strong><br>Anticipates failures before the customer notices</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Predictive AI (SNR, Rx/Tx, Uptime)<br><span class="positive">(+) Reduces technical visits by 40%.</span></td>
+                        <td class="highlight-beegol"><span class="check">✔</span> ML Anomaly Detection<br><span class="positive">(+) Proactive alerts generated based on history.</span></td>
+                        <td><span class="gap">⚠️</span> Reactive threshold alerts.<br><span class="negative">(-) No machine learning (ML).</span></td>
+                        <td><span class="gap">✖</span> Only basic monitoring.<br><span class="negative">(-) Completely reactive.</span></td>
+                        <td><span class="gap">⚠️</span> Visual charts, manual analysis.<br><span class="negative">(-) No prediction algorithms.</span></td>
+                        <td><span class="gap">✖</span> Only parameter reading.<br><span class="negative">(-) Completely reactive.</span></td>
+                    </tr>
+                    <tr><td><strong>Self-Healing Wi-Fi (Autonomous RF)</strong><br>Auto adjustment of channel, power, and steering</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> ML dynamically alters channels and clients.<br><span class="positive">(+) Solves interference in real-time.</span></td>
+                        <td class="highlight-beegol"><span class="check">✔</span> Autonomous RRM<br><span class="positive">(+) Dynamically adjusts channels to avoid noise.</span></td>
+                        <td><span class="gap">⚠️</span> Assisted steering via dashboard.<br><span class="negative">(-) Operator must act/click.</span></td>
+                        <td><span class="gap">✖</span> No automation.<br><span class="negative">(-) Requires technical visit.</span></td>
+                        <td><span class="gap">⚠️</span> Manual changes via UI.<br><span class="negative">(-) Dependent on human action.</span></td>
+                        <td><span class="gap">✖</span> Only manual config.<br><span class="negative">(-) High operational cost.</span></td>
+                    </tr>
+                    <tr><td><strong>QoE by Application</strong><br>Monitoring of gaming, video, VoIP</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Edge DPI calculates MOS, gaming latency.<br><span class="positive">(+) Alerts on critical service drops.</span></td>
+                        <td class="highlight-beegol"><span class="check">✔</span> App Visibility (DPI based)<br><span class="positive">(+) Tracks streaming and gaming performance.</span></td>
+                        <td><span class="gap">⚠️</span> Only SNR and ICMP latency.<br><span class="negative">(-) Does not identify specific apps.</span></td>
+                        <td><span class="gap">✖</span> No QoE visibility.<br><span class="negative">(-) Blind to user experience.</span></td>
+                        <td><span class="gap">✖</span> Only general traffic charts.<br><span class="negative">(-) No app identification.</span></td>
+                        <td><span class="gap">✖</span> No QoE visibility.<br><span class="negative">(-) Blind to user experience.</span></td>
+                    </tr>
+                    <tr><td><strong>Root Cause Analysis</strong><br>Automatic diagnosis in natural language</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Express Root Cause (text diagnosis).<br><span class="positive">(+) Drastically reduces MTTR.</span></td>
+                        <td class="highlight-beegol"><span class="check">✔</span> Automated Insights<br><span class="positive">(+) Correlates data for techs automatically.</span></td>
+                        <td><span class="gap">⚠️</span> Diagnostic tools available.<br><span class="negative">(-) Technician must interpret data.</span></td>
+                        <td><span class="gap">✖</span> Only Online/Offline status.<br><span class="negative">(-) No complex cause identification.</span></td>
+                        <td><span class="gap">⚠️</span> Visual indicators.<br><span class="negative">(-) Requires L2 interpretation.</span></td>
+                        <td><span class="gap">✖</span> Pure parameter data.<br><span class="negative">(-) Fully manual diagnosis.</span></td>
+                    </tr>
+                    <tr><td><strong>Sticky Client Detection & Roaming</strong></td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> ML autonomously forces 802.11v/k steering.<br><span class="positive">(+) Eliminates "slow Wi-Fi" complaints.</span></td>
+                        <td class="highlight-beegol"><span class="check">✔</span> Client Steering enforced<br><span class="positive">(+) Forces 11v/k roaming proactively.</span></td>
+                        <td><span class="gap">⚠️</span> Dashboard shows clients.<br><span class="negative">(-) Requires manual steering.</span></td>
+                        <td><span class="gap">✖</span> No detection.<br><span class="negative">(-) Client stuck until reboot.</span></td>
+                        <td><span class="gap">⚠️</span> Visualizes connected clients.<br><span class="negative">(-) No auto-roaming enforcement.</span></td>
+                        <td><span class="gap">✖</span> No detection.<br><span class="negative">(-) Client stuck until reboot.</span></td>
+                    </tr>
+                    <tr><td><strong>Proactive Upgrade Recommendation</strong><br>Suggests mesh/new CPE based on data</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> AI correlates low SNR and complaints.<br><span class="positive">(+) Drives upsell and reduces churn.</span></td>
+                        <td class="highlight-beegol"><span class="check">✔</span> Capacity Prediction<br><span class="positive">(+) Suggests hardware swaps via modeling.</span></td>
+                        <td><span class="gap">⚠️</span> Signal reports available.<br><span class="negative">(-) Sales must analyze manually.</span></td>
+                        <td><span class="gap">✖</span> No intelligence.<br><span class="negative">(-) Lost sales opportunities.</span></td>
+                        <td><span class="gap">⚠️</span> Dashboards show bad signals.<br><span class="negative">(-) No automated trigger.</span></td>
+                        <td><span class="gap">✖</span> No intelligence.<br><span class="negative">(-) Lost sales opportunities.</span></td>
+                    </tr>
+                    <tr><td><strong>AI-Driven Chatbot</strong><br>Resolutions based on predictive telemetry</td>
+                        <td class="highlight-aprecomm"><span class="check">✔</span> Bot Insights (RCA)<br><span class="positive">(+) Translates complex faults into plain text for the customer via API.</span></td>
+                        <td class="highlight-beegol"><span class="check">✔</span> ML Insights via API<br><span class="positive">(+) Feeds bot flows with real fault prediction data.</span></td>
+                        <td><span class="gap">⚠️</span> Functional/Reactive Bot<br><span class="negative">(-) Restricted to static commands (check signal, reboot, password). No AI.</span></td>
+                        <td><span class="gap">⚠️</span> Static Flows (IVR)<br><span class="negative">(-) Closed decision tree, doesn't correlate autonomous RF data.</span></td>
+                        <td><span class="gap">✖</span> Reactive API<br><span class="negative">(-) Does not inject network intelligence into customer service.</span></td>
+                        <td><span class="gap">✖</span> Non-existent<br><span class="negative">(-) Operation restricted to human support.</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="info-card">
+            <h4>🧠 Conclusion – With Embedded Agent Capabilities</h4>
+            <p><strong>Aprecomm (VWE)</strong> and <strong>Beegol (Agent)</strong> are the platforms that truly offer an Edge AI ecosystem for ISP networks by utilizing embedded agents. They deliver predictive maintenance, self-healing Wi-Fi, application-level QoE, and automated diagnostics. This translates directly into a reduction of support calls and increased satisfaction.<br>
+            <strong>Anlix</strong> and <strong>Made4Graph</strong> offer excellent visual aids and dashboards, but their operation remains essentially reactive based on polling, requiring human interpretation.<br>
+            <strong>Tier 3 (IXC/INT6)</strong> does not offer edge intelligence or visual abstractions, relying purely on manual parameter checks.</p>
+        </div>
+    </div>
+
+    <div id="matrix" class="content-section">
+        <div class="notification">
+            <h4>⚡ GAPS AND PROTOCOL ANALYSIS</h4>
+            <p>Items in <strong>RED</strong> indicate the absence of a feature, API dependency, or manual requirement compared to leaders.</p>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="16%">Technical Pillar / Feature</th>
+                        <th class="th-aprecomm" width="12%">APRECOMM (Edge AI + USP)</th>
+                        <th class="th-beegol" width="12%">Beegol (AI + Agent)</th>
+                        <th width="12%">Tier 1 (Axiros / AVSystem)</th>
+                        <th width="12%">Tier 2: Anlix (Flashman)</th>
+                        <th class="th-tier3" width="12%">Tier 3: IXC</th>
+                        <th class="th-tier3" width="12%">Tier 3: Made4Graph</th>
+                        <th class="th-tier3" width="12%">Tier 3: INT6</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="feature-cat"><td colspan="8">📦 PRODUCT PORTFOLIO & MAIN ENGINE</td></tr>
+                    <tr><td>Main platforms</td><td class="highlight-aprecomm"><strong>VWE + VCS</strong><br>Native AI</td><td class="highlight-beegol"><strong>ACS + Agent</strong><br>AI Driven</td><td>AXESS / Coiote<br>Massive scale</td><td>Flashman ACS<br>Visual analytics</td><td>IXC ACS<br>ZTP Focus</td><td>Made4Graph<br>UI Focus</td><td>INT6 ACS<br>Pure TR-069</td></tr>
+                    
+                    <tr class="feature-cat"><td colspan="8">📡 PROTOCOLS & DATA MODELS</td></tr>
+                    <tr><td>Policy Engine / Bulk Configuration</td><td class="highlight-aprecomm"><span class="check">✔</span> Dynamic rule-guided policies</td><td><span class="gap">⚠️</span> Scheduled Profiles</td><td><span class="check">✔</span> Granular advanced policies</td><td><span class="check">✔</span> Scheduled Campaigns and Profiles</td><td><span class="gap">⚠️</span> Via ERP routines</td><td><span class="gap">⚠️</span> Templates and bulk tasks</td><td><span class="check">✔</span> Massive script execution</td></tr>
+                    <tr><td>Native TR-369 (USP)</td><td class="highlight-aprecomm"><span class="check">✔</span> Full USP Controller</td><td><span class="check">✔</span> Basic USP</td><td><span class="check">✔</span> Basic USP Support</td><td><span class="gap">✖</span> TR-069 Only</td><td><span class="gap-text">✖</span> TR-069 Only</td><td><span class="gap-text">✖</span> TR-069 Only</td><td><span class="gap-text">✖</span> TR-069 Only</td></tr>
+                    <tr><td>TR-181 Data Model</td><td class="highlight-aprecomm"><span class="check">✔</span> Full Device:2</td><td><span class="check">✔</span> High coverage</td><td><span class="check">✔</span> Full BBF Compliance</td><td><span class="check">✔</span> High coverage</td><td><span class="gap-text">✖</span> Legacy TR-098</td><td><span class="check">✔</span> Good TR-181</td><td><span class="check">✔</span> Full TR-181</td></tr>
+                    <tr><td>TR-143 Tests</td><td class="highlight-aprecomm"><span class="check">✔</span> Multi-thread UDP/TCP</td><td><span class="check">✔</span> Standard tools</td><td><span class="check">✔</span> BBF Certified</td><td><span class="check">✔</span> Script-based</td><td><span class="gap">✖</span> Not available</td><td><span class="gap">⚠️</span> Script-based</td><td><span class="check">✔</span> Basic TR-143</td></tr>
+                    
+                    <tr class="feature-cat"><td colspan="8">📶 WI-FI 6/7 INTELLIGENCE & QOE</td></tr>
+                    <tr><td>Real-time QoE (App MOS)</td><td class="highlight-aprecomm"><span class="check">✔</span> Gaming, video, VoIP</td><td class="highlight-beegol"><span class="check">✔</span> App visibility</td><td><span class="gap-text">✖</span> only signal metrics</td><td><span class="gap-text">✖</span> basic SNR charts</td><td><span class="gap">✖</span> None</td><td><span class="gap">✖</span> None</td><td><span class="gap">✖</span> None</td></tr>
+                    <tr><td>Autonomous self-healing</td><td class="highlight-aprecomm"><span class="check">✔</span> Channel/power with ML</td><td class="highlight-beegol"><span class="check">✔</span> ML RRM</td><td><span class="gap">✖</span> Rule-based</td><td><span class="gap">✖</span> Manual</td><td><span class="gap">✖</span> None</td><td><span class="gap">✖</span> None</td><td><span class="gap">✖</span> None</td></tr>
+                    <tr><td>Steering and sticky client</td><td class="highlight-aprecomm"><span class="check">✔</span> AI-based 802.11v/k</td><td class="highlight-beegol"><span class="check">✔</span> 11v/k steering</td><td><span class="gap-text">✖</span> basic 11v scripts</td><td><span class="check">✔</span> assisted (dashboard)</td><td><span class="gap">✖</span> None</td><td><span class="gap">⚠️</span> Manual via UI</td><td><span class="gap">✖</span> None</td></tr>
+                    <tr><td>SNR/RSSI History</td><td class="highlight-aprecomm"><span class="check">✔</span> 30-day AI trend</td><td><span class="check">✔</span> Detailed charts</td><td><span class="check">✔</span> coarse polling</td><td><span class="check">✔</span> detailed charts ✅</td><td><span class="gap-text">✖</span> minimal</td><td><span class="check">✔</span> detailed charts</td><td><span class="gap">⚠️</span> basic logs</td></tr>
+                    
+                    <tr class="feature-cat"><td colspan="8">🌐 L2-L4 NETWORK SERVICES & CGNAT VISIBILITY</td></tr>
+                    <tr><td>CGNAT port exhaustion</td><td class="highlight-aprecomm"><span class="check">✔</span> Per-CPE detection</td><td><span class="check">✔</span> IP Detection</td><td><span class="check">✔</span> lawful intercept logs</td><td><span class="check">✔</span> Public/private IP</td><td><span class="check">✔</span> basic pool</td><td><span class="check">✔</span> IP detection</td><td><span class="check">✔</span> pool management</td></tr>
+                    <tr><td>IPv6 / VLAN / ACL</td><td class="highlight-aprecomm"><span class="check">✔</span> GUI + bulk config</td><td><span class="check">✔</span> Visual UI</td><td><span class="check">✔</span> complex multi-WAN</td><td><span class="check">✔</span> Visual UI for techs</td><td><span class="check">✔</span> manual profile</td><td><span class="check">✔</span> Visual UI</td><td><span class="check">✔</span> TR-069 Trees</td></tr>
+                    
+                    <tr class="feature-cat"><td colspan="8">🔌 INTEGRATION & BRAZILIAN ERPs</td></tr>
+                    <tr><td>Native hooks (BR ERPs)</td><td class="highlight-aprecomm"><span class="gap">⚠️</span> API-first</td><td><span class="gap">⚠️</span> API-first</td><td><span class="gap-text">Requires SDK/API</span></td><td class="highlight-anlix"><span class="check">✔</span> Native (BR)</td><td><span class="check">✔</span> Native IXC</td><td><span class="check">✔</span> Native (BR)</td><td><span class="check">✔</span> Native INT6</td></tr>
+                    <tr><td>Zero-touch Provisioning</td><td class="highlight-aprecomm"><span class="check">✔</span> Dual stack USP/TR-069</td><td><span class="check">✔</span> UI onboarding</td><td><span class="check">✔</span> multi-vendor</td><td><span class="check">✔</span> good onboarding</td><td><span class="check">✔</span> Native ERP ZTP</td><td><span class="check">✔</span> UI onboarding</td><td><span class="check">✔</span> ZTP Script</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function switchTab(tabId) {
+        const tabs = document.querySelectorAll('.content-section');
+        const btns = document.querySelectorAll('.btn-tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+        btns.forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    }
+    
+    document.querySelectorAll('.btn-tab').forEach(btn => {
+        const tabId = btn.getAttribute('data-tab');
+        if (tabId) btn.onclick = () => switchTab(tabId);
+    });
+</script>
+</body>
+</html>
