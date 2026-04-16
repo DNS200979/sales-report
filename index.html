@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sales Hub: Aprecomm VCS & VWE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -58,14 +58,24 @@
         .hide-scroll::-webkit-scrollbar-track { background: transparent; }
         .hide-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         .hide-scroll::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Estilos do Modal de Imagem */
+        #imageModal { backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        .modal-image-anim { animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body class="flex flex-col md:flex-row h-screen antialiased selection:bg-aprecomm-orange selection:text-white">
 
+    <!-- Modal Responsivo para Ampliar a Imagem -->
+    <div id="imageModal" class="fixed inset-0 z-[100] hidden bg-black/90 flex items-center justify-center p-4 transition-opacity" onclick="closeModal()">
+        <button class="absolute top-4 right-4 text-white text-5xl cursor-pointer hover:text-aprecomm-orange focus:outline-none w-12 h-12 flex items-center justify-center bg-black/50 rounded-full" aria-label="Fechar">&times;</button>
+        <img id="modalImage" class="max-w-full max-h-full rounded-lg object-contain shadow-2xl modal-image-anim" src="" alt="Imagem Ampliada" onclick="event.stopPropagation()">
+    </div>
+
     <nav class="w-full md:w-64 bg-slate-900 border-b md:border-r border-slate-800 flex-shrink-0 flex md:flex-col justify-between md:justify-start z-20 md:h-screen overflow-y-auto hide-scroll p-4 sticky top-0 shadow-xl">
         <div>
             <div class="hidden md:block mb-8 px-2">
-                <!--<img src="Gemini_Generated_Image_p1am5qp1am5qp1am.png" alt="Aprecomm Hub Logo" class="w-full h-auto object-contain drop-shadow-md rounded-lg">-->
                 <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-3">By Denis Fernandes</p>
             </div>
             <ul class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
@@ -243,7 +253,8 @@
             { id: 'vcs-1', icon: '⚡', title: 'Modern Protocols', subtitle: 'TR-369 (USP) Native', content: '<strong>The End of Delay:</strong> While local competitors (Anlix, IXC) rely purely on legacy TR-069 (slow, reactive polling), VCS natively supports <strong>TR-369 (USP)</strong>. This guarantees continuous, real-time telemetry streaming without overwhelming network bandwidth.' },
             { id: 'vcs-2', icon: '⚙️', title: 'Policy Engine', subtitle: 'Dynamic Bulk Configs', content: '<strong>Operational Superiority:</strong> Our policies are not simple "task schedulers". We feature a dynamic <em>Policy Engine</em> that applies massive configurations based on logical rules, network events, tags, and groups, enabling genuine network automation.' },
             { id: 'vcs-3', icon: '🛡️', title: 'Disaster Prevention', subtitle: 'Automatic Rollback', content: '<strong>The Killer Argument:</strong> During massive firmware upgrades or bulk changes, VCS features <strong>Automatic Rollback</strong>. If an update fails, the CPE safely reverts. Local competitors demand <em>manual</em> rollbacks, risking "bricking" thousands of routers overnight.' },
-            { id: 'vcs-4', icon: '📋', title: 'Audit & Governance', subtitle: 'Detailed Timestamps', content: '<strong>Enterprise-Grade Compliance:</strong> VCS meticulously logs <strong>who</strong> queried data and <strong>who</strong> edited parameters, with <strong>exact dates and times</strong>. This level of security and IT governance is entirely ignored by Tier 3 tools.<div class="mt-5 rounded-xl overflow-hidden border border-slate-700 shadow-lg bg-slate-800 p-1"><img src="audit_logs.jpg" alt="Aprecomm Audit Logs Dashboard" class="w-full h-auto object-cover rounded-lg hover:scale-[1.02] transition-transform duration-300"></div>' },
+            // Alterado: Adicionado evento de clique (onclick) e cursor-zoom-in na imagem
+            { id: 'vcs-4', icon: '📋', title: 'Audit & Governance', subtitle: 'Detailed Timestamps', content: '<strong>Enterprise-Grade Compliance:</strong> VCS meticulously logs <strong>who</strong> queried data and <strong>who</strong> edited parameters, with <strong>exact dates and times</strong>. This level of security and IT governance is entirely ignored by Tier 3 tools.<div class="mt-5 rounded-xl overflow-hidden border border-slate-700 shadow-lg bg-slate-800 p-1"><img src="audit_logs.jpg" alt="Aprecomm Audit Logs Dashboard" onclick="openModal(this.src)" class="w-full h-auto object-cover rounded-lg hover:scale-[1.02] transition-transform duration-300 cursor-zoom-in"></div>' },
             { id: 'vcs-5', icon: '📊', title: 'Data Intelligence', subtitle: 'Excel Mass Export', content: '<strong>Own Your Data:</strong> Allows ISPs to execute massive downloads of existing configurations and base parameters, generating easily exportable reports for <strong>Excel (XLS/CSV)</strong>. Essential for business intelligence and base audits.' },
             { id: 'vcs-6', icon: '🩺', title: 'Deep Diagnostics', subtitle: 'TR-181 & TR-143', content: '<strong>Absolute Control:</strong> Granular access to the full TR-181 Device:2 tree and the ability to run multi-threaded L2/L3 network tests (Ping, Path Trace) directly from the customer\'s CPE equipment.' },
             { id: 'vcs-7', icon: '🚀', title: 'ZTP Provisioning', subtitle: 'Fail-safe Zero-Touch', content: '<strong>Instant Onboarding:</strong> Secure Zero-Touch Provisioning using robust templates that prevent CPE lockouts. Native support for Dual-stack USP/TR-069 ensures compatibility with both legacy hardware and next-gen routers.' },
@@ -351,6 +362,33 @@
                 </div>
             `;
         }
+
+        // Funções para Controle do Modal da Imagem Responsiva
+        function openModal(imgSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            
+            modalImg.src = imgSrc;
+            modal.classList.remove('hidden');
+            
+            // Impede a rolagem do fundo em dispositivos móveis quando o modal está aberto
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            
+            // Restaura a rolagem do fundo
+            document.body.style.overflow = '';
+        }
+
+        // Fecha o modal se o usuário pressionar a tecla "Esc"
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
 
         function copyPitch() {
             const text = "Mr. Service Provider, local Tier 2 or ERP-native tools only show you the past—reactive charts that force your team into manual, risky interventions. Aprecomm is a Tier 1 Global Sovereign Platform. We deliver end-to-end control from your OLT to the user's App. Our VCS engine executes massive policies with fail-safe automatic rollbacks and deep compliance audits. Meanwhile, our VWE Edge AI dynamically self-heals Wi-Fi interference and predicts failures before your subscriber ever picks up the phone to complain. We don't just monitor your network; we automate your operations.";
