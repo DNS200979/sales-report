@@ -18,19 +18,15 @@
                             orangeDark: '#cc5200',
                             orangeLight: 'rgba(255, 102, 0, 0.1)',
                             blue: '#3b82f6',
-                            bgBase: '#0f172a', /* slate-900 */
-                            bgPanel: '#1e293b', /* slate-800 */
-                            bgHover: '#334155'  /* slate-700 */
+                            bgBase: '#0f172a',
+                            bgPanel: '#1e293b',
+                            bgHover: '#334155'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- Chosen Palette: Aprecomm Dark & Orange (Slate 900, Slate 800, Aprecomm Orange, White text) -->
-    <!-- Application Structure Plan: SPA optimized for Dark Mode B2B B2B sales presentations (English). Sidebar nav separates Pitch, VCS, VWE, and Battlecards. Features auto-selection to immediately show the "killer argument". Competitor analysis updated to include Global Tier 1s (Axiros/AVSystem) and exclude local competitors like Beegol. -->
-    <!-- Visualization & Content Choices: Radar chart updated for dark mode visibility with English labels. Interactive cards styled for dark backgrounds with neon-like orange highlights. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; overflow-x: hidden; }
         
@@ -69,8 +65,8 @@
     <nav class="w-full md:w-64 bg-slate-900 border-b md:border-r border-slate-800 flex-shrink-0 flex md:flex-col justify-between md:justify-start z-20 md:h-screen overflow-y-auto hide-scroll p-4 sticky top-0 shadow-xl">
         <div>
             <div class="hidden md:block mb-8 px-2">
-                <h1 class="text-2xl font-extrabold text-white tracking-tight">APRECOMM<span class="text-aprecomm-orange">.hub</span></h1>
-                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-1">Global Sales Battlecard</p>
+                <img src="Gemini_Generated_Image_p1am5qp1am5qp1am.png" alt="Aprecomm Hub Logo" class="w-full h-auto object-contain drop-shadow-md rounded-lg">
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-3">Global Sales Battlecard</p>
             </div>
             <ul class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
                 <li>
@@ -241,7 +237,7 @@
             { id: 'vcs-1', icon: '⚡', title: 'Modern Protocols', subtitle: 'TR-369 (USP) Native', content: '<strong>The End of Delay:</strong> While local competitors (Anlix, IXC) rely purely on legacy TR-069 (slow, reactive polling), VCS natively supports <strong>TR-369 (USP)</strong>. This guarantees continuous, real-time telemetry streaming without overwhelming network bandwidth.' },
             { id: 'vcs-2', icon: '⚙️', title: 'Policy Engine', subtitle: 'Dynamic Bulk Configs', content: '<strong>Operational Superiority:</strong> Our policies are not simple "task schedulers". We feature a dynamic <em>Policy Engine</em> that applies massive configurations based on logical rules, network events, tags, and groups, enabling genuine network automation.' },
             { id: 'vcs-3', icon: '🛡️', title: 'Disaster Prevention', subtitle: 'Automatic Rollback', content: '<strong>The Killer Argument:</strong> During massive firmware upgrades or bulk changes, VCS features <strong>Automatic Rollback</strong>. If an update fails, the CPE safely reverts. Local competitors demand <em>manual</em> rollbacks, risking "bricking" thousands of routers overnight.' },
-            { id: 'vcs-4', icon: '📋', title: 'Audit & Governance', subtitle: 'Detailed Timestamps', content: '<strong>Enterprise-Grade Compliance:</strong> VCS meticulously logs <strong>who</strong> queried data and <strong>who</strong> edited parameters, with <strong>exact dates and times</strong>. This level of security and IT governance is entirely ignored by Tier 3 tools.' },
+            { id: 'vcs-4', icon: '📋', title: 'Audit & Governance', subtitle: 'Detailed Timestamps', content: '<strong>Enterprise-Grade Compliance:</strong> VCS meticulously logs <strong>who</strong> queried data and <strong>who</strong> edited parameters, with <strong>exact dates and times</strong>. This level of security and IT governance is entirely ignored by Tier 3 tools.<div class="mt-5 rounded-xl overflow-hidden border border-slate-700 shadow-lg bg-slate-800 p-1"><img src="audit_logs.jpg" alt="Aprecomm Audit Logs Dashboard" class="w-full h-auto object-cover rounded-lg hover:scale-[1.02] transition-transform duration-300"></div>' },
             { id: 'vcs-5', icon: '📊', title: 'Data Intelligence', subtitle: 'Excel Mass Export', content: '<strong>Own Your Data:</strong> Allows ISPs to execute massive downloads of existing configurations and base parameters, generating easily exportable reports for <strong>Excel (XLS/CSV)</strong>. Essential for business intelligence and base audits.' },
             { id: 'vcs-6', icon: '🩺', title: 'Deep Diagnostics', subtitle: 'TR-181 & TR-143', content: '<strong>Absolute Control:</strong> Granular access to the full TR-181 Device:2 tree and the ability to run multi-threaded L2/L3 network tests (Ping, Path Trace) directly from the customer\'s CPE equipment.' },
             { id: 'vcs-7', icon: '🚀', title: 'ZTP Provisioning', subtitle: 'Fail-safe Zero-Touch', content: '<strong>Instant Onboarding:</strong> Secure Zero-Touch Provisioning using robust templates that prevent CPE lockouts. Native support for Dual-stack USP/TR-069 ensures compatibility with both legacy hardware and next-gen routers.' },
@@ -261,28 +257,28 @@
         const battleData = {
             tier1: {
                 name: 'Global Tier 1 (Axiros/AVSystem)',
-                color: '#3b82f6', /* Blue for Tier 1 */
+                color: '#3b82f6',
                 pros: 'Massive global scale, highly robust ACS engines, strong BBF compliance, and capable of handling millions of standard TR-069/USP devices.',
                 cons: 'They are legacy giants built around pure ACS logic. <strong>They lack our embedded Edge AI (VWE).</strong> They do not offer autonomous Machine Learning Self-Healing or App-level QoE out-of-the-box without highly expensive, complex custom SDK development. Aprecomm delivers Tier 1 infrastructure <em>combined</em> with plug-and-play Edge AI.',
-                stats: [2, 3, 10, 10, 2] // AI, Automacao, Escala, Seguranca, QoE
+                stats: [2, 3, 10, 10, 2]
             },
             anlix: {
                 name: 'Local Tier 2 (Anlix / Flashman)',
-                color: '#facc15', /* yellow */
+                color: '#facc15',
                 pros: 'Very user-friendly dashboard for Level 1 technicians and native integrations with local Brazilian ERP systems.',
                 cons: 'They are <strong>purely reactive and based entirely on legacy TR-069</strong>. They possess no real embedded AI (just pretty graphs). <strong>Warning: If they make a mistake in a bulk update, there is NO automatic rollback</strong> (high risk of bricking networks overnight). No real-time USP support. Zero visibility into Gaming/Video QoE.',
                 stats: [2, 5, 6, 2, 3]
             },
             tier3: {
                 name: 'Local Tier 3 (IXC, Made4Graph)',
-                color: '#ef4444', /* red */
+                color: '#ef4444',
                 pros: 'Low cost, native integration with their own proprietary ERPs, and basic Zero-Touch Provisioning.',
                 cons: 'These are <strong>rigid, bare-bones reading tools</strong> focused only on basic parameter polling. They feature <strong>Zero Artificial Intelligence</strong>, zero prediction, zero Wi-Fi automation, and rely 100% on human intervention. They cannot handle the protocol bottlenecks of massive ISP growth. They completely lack deep audit logs and clean data exportation.',
                 stats: [0, 2, 4, 0, 0]
             },
             aprecomm: {
                 name: 'Aprecomm (VCS+VWE)',
-                color: '#FF6600', /* Aprecomm Orange */
+                color: '#FF6600',
                 stats: [10, 10, 10, 10, 10]
             }
         };
@@ -292,14 +288,12 @@
         // --- Core Interaction Functions ---
 
         function nav(sectionId) {
-            // Update UI Active States
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
             
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             document.getElementById(`nav-${sectionId}`).classList.add('active');
 
-            // Render Grids and auto-select first item
             if(sectionId === 'vcs') {
                 if(document.getElementById('vcs-grid').innerHTML.trim() === '') {
                     renderGrid('vcs');
@@ -313,7 +307,6 @@
                 }
             }
             
-            // Default Battlecard view (Now defaults to Tier 1 to show dominance)
             if(sectionId === 'battle' && !battleChartInstance) loadBattle('tier1');
         }
 
@@ -331,12 +324,10 @@
         }
 
         function showDetail(type, id) {
-            // Update selected visual state
             document.querySelectorAll(`#${type}-grid .feature-card`).forEach(c => c.classList.remove('selected'));
             const card = document.getElementById(`card-${id}`);
             if(card) card.classList.add('selected');
 
-            // Find data and update panel
             const data = (type === 'vcs' ? vcsData : vweData).find(d => d.id === id);
             if(!data) return;
             const panel = document.getElementById(`${type}-detail-panel`);
@@ -363,7 +354,6 @@
         }
 
         function loadBattle(compId) {
-            // Update button styles
             document.querySelectorAll('.battle-btn').forEach(btn => {
                 btn.classList.remove('border-aprecomm-orange', 'bg-slate-700', 'text-aprecomm-orange');
                 btn.classList.add('border-transparent', 'bg-slate-800', 'text-slate-300');
@@ -375,12 +365,10 @@
             const comp = battleData[compId];
             const apre = battleData.aprecomm;
 
-            // Update Text content
             document.getElementById('battle-pros').innerHTML = comp.pros;
             document.getElementById('battle-cons').innerHTML = comp.cons;
             document.getElementById('chart-title').innerHTML = `Aprecomm vs. ${comp.name}`;
 
-            // Update Chart
             updateChart(comp, apre);
         }
 
@@ -393,7 +381,7 @@
                     {
                         label: 'Aprecomm',
                         data: apreData.stats,
-                        backgroundColor: 'rgba(255, 102, 0, 0.2)', // Orange with opacity
+                        backgroundColor: 'rgba(255, 102, 0, 0.2)',
                         borderColor: '#FF6600',
                         pointBackgroundColor: '#FF6600',
                         pointBorderColor: '#1e293b',
@@ -452,7 +440,7 @@
 
             if (battleChartInstance) {
                 battleChartInstance.data = dataObj;
-                battleChartInstance.options.scales.r.angleLines.color = 'rgba(255, 255, 255, 0.1)'; // Ensure dark mode lines
+                battleChartInstance.options.scales.r.angleLines.color = 'rgba(255, 255, 255, 0.1)';
                 battleChartInstance.update();
             } else {
                 battleChartInstance = new Chart(ctx, config);
