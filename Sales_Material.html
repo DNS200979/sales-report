@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Hub: Aprecomm VCS & VWE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        aprecomm: {
+                            orange: '#FF6600',
+                            orangeDark: '#cc5200',
+                            orangeLight: 'rgba(255, 102, 0, 0.1)',
+                            blue: '#3b82f6',
+                            bgBase: '#0f172a', /* slate-900 */
+                            bgPanel: '#1e293b', /* slate-800 */
+                            bgHover: '#334155'  /* slate-700 */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chosen Palette: Aprecomm Dark & Orange (Slate 900, Slate 800, Aprecomm Orange, White text) -->
+    <!-- Application Structure Plan: SPA optimized for Dark Mode B2B B2B sales presentations (English). Sidebar nav separates Pitch, VCS, VWE, and Battlecards. Features auto-selection to immediately show the "killer argument". Competitor analysis updated to include Global Tier 1s (Axiros/AVSystem) and exclude local competitors like Beegol. -->
+    <!-- Visualization & Content Choices: Radar chart updated for dark mode visibility with English labels. Interactive cards styled for dark backgrounds with neon-like orange highlights. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; overflow-x: hidden; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; }
+        }
+
+        .nav-item.active { background-color: #FF6600; color: white; border-radius: 0.5rem; }
+        .nav-item.active .icon-bg { background-color: rgba(255,255,255,0.2); }
+        .nav-item:not(.active):hover { background-color: #1e293b; color: #f8fafc; }
+        
+        .feature-card { transition: all 0.2s ease-in-out; border-color: #334155; background-color: #1e293b; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); border-color: #FF6600; background-color: #334155; }
+        .feature-card.selected { border-color: #FF6600; background-color: rgba(255, 102, 0, 0.05); box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.4); }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hide-scroll::-webkit-scrollbar { width: 6px; }
+        .hide-scroll::-webkit-scrollbar-track { background: transparent; }
+        .hide-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .hide-scroll::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen antialiased selection:bg-aprecomm-orange selection:text-white">
+
+    <nav class="w-full md:w-64 bg-slate-900 border-b md:border-r border-slate-800 flex-shrink-0 flex md:flex-col justify-between md:justify-start z-20 md:h-screen overflow-y-auto hide-scroll p-4 sticky top-0 shadow-xl">
+        <div>
+            <div class="hidden md:block mb-8 px-2">
+                <h1 class="text-2xl font-extrabold text-white tracking-tight">APRECOMM<span class="text-aprecomm-orange">.hub</span></h1>
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-1">Global Sales Battlecard</p>
+            </div>
+            <ul class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+                <li>
+                    <button onclick="nav('pitch')" id="nav-pitch" class="nav-item active w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-slate-400 transition-colors whitespace-nowrap md:whitespace-normal font-medium">
+                        <span class="icon-bg bg-slate-800 p-1.5 rounded-md text-lg leading-none">🌍</span>
+                        <span>Pitch & Sovereignty</span>
+                    </button>
+                </li>
+                <li>
+                    <button onclick="nav('vcs')" id="nav-vcs" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-slate-400 transition-colors whitespace-nowrap md:whitespace-normal font-medium">
+                        <span class="icon-bg bg-slate-800 p-1.5 rounded-md text-lg leading-none">⚙️</span>
+                        <span>VCS Engine (Core)</span>
+                    </button>
+                </li>
+                <li>
+                    <button onclick="nav('vwe')" id="nav-vwe" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-slate-400 transition-colors whitespace-nowrap md:whitespace-normal font-medium">
+                        <span class="icon-bg bg-slate-800 p-1.5 rounded-md text-lg leading-none">🧠</span>
+                        <span>VWE Agent (Edge AI)</span>
+                    </button>
+                </li>
+                <li>
+                    <button onclick="nav('battle')" id="nav-battle" class="nav-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-slate-400 transition-colors whitespace-nowrap md:whitespace-normal font-medium">
+                        <span class="icon-bg bg-slate-800 p-1.5 rounded-md text-lg leading-none">🥊</span>
+                        <span>Battlecards</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="hidden md:block mt-auto px-4 py-4 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
+            <p class="text-xs font-bold text-aprecomm-orange mb-1">Sales Pro Tip</p>
+            <p class="text-xs text-slate-300">Focus on <strong class="text-white">Edge AI</strong> against Tier 1 giants, and <strong class="text-white">Automatic Rollback / TR-369</strong> against local Tier 2/3 tools.</p>
+        </div>
+    </nav>
+
+    <main class="flex-1 overflow-y-auto bg-slate-900 relative p-4 md:p-8 lg:p-10 w-full">
+        
+        <section id="sec-pitch" class="fade-in max-w-5xl mx-auto block">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-white mb-3">Positioning: Global Sovereignty</h2>
+                <p class="text-slate-400 text-lg">Set the tone immediately. Aprecomm is not just another local dashboard; it is a Tier 1 Global Platform. Use these facts to anchor our undeniable market dominance and engineering superiority.</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                <div class="bg-aprecomm-bgPanel p-6 rounded-2xl shadow-lg border border-slate-700 flex flex-col items-start">
+                    <div class="text-4xl mb-4">🌍</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Unmatched Scale</h3>
+                    <p class="text-slate-400 text-sm">We securely manage <strong class="text-aprecomm-orange">millions of devices</strong> globally. We support high-availability, mission-critical ISP operations worldwide, far beyond regional dashboard limits.</p>
+                </div>
+                <div class="bg-aprecomm-bgPanel p-6 rounded-2xl shadow-lg border border-slate-700 flex flex-col items-start">
+                    <div class="text-4xl mb-4">📜</div>
+                    <h3 class="text-xl font-bold text-white mb-2">BBF Certification</h3>
+                    <p class="text-slate-400 text-sm">Strict compliance with <strong class="text-aprecomm-orange">Broadband Forum (BBF)</strong> standards. We deliver carrier-grade security, standardized protocols, and data models that Tier 2/3 platforms simply lack.</p>
+                </div>
+                <div class="bg-aprecomm-bgPanel p-6 rounded-2xl shadow-lg border border-slate-700 flex flex-col items-start border-b-4 border-b-aprecomm-orange">
+                    <div class="text-4xl mb-4">🔗</div>
+                    <h3 class="text-xl font-bold text-white mb-2">End-to-End Control</h3>
+                    <p class="text-slate-400 text-sm">We provide a holistic ecosystem: from the <strong class="text-aprecomm-orange">OLT, through the CPE, down to the Subscriber App</strong>. We don't just manage routers; we command the entire access network.</p>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-aprecomm-orangeDark to-aprecomm-orange text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 text-9xl opacity-20">🚀</div>
+                <h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><span>🚀</span> The Elevator Pitch</h3>
+                <p class="text-lg leading-relaxed text-orange-50 italic font-medium">
+                    "Mr. Service Provider, local Tier 2 or ERP-native tools only show you the past—reactive charts that force your team into manual, risky interventions. Aprecomm is a Tier 1 Global Sovereign Platform. We deliver end-to-end control from your OLT to the user's App. Our VCS engine executes massive policies with fail-safe automatic rollbacks and deep compliance audits. Meanwhile, our VWE Edge AI dynamically self-heals Wi-Fi interference and predicts failures before your subscriber ever picks up the phone to complain. We don't just monitor your network; we automate your operations."
+                </p>
+                <button onclick="copyPitch()" class="mt-6 bg-slate-900 text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-slate-800 transition-colors shadow-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-white">
+                    📋 Copy Pitch to Clipboard
+                </button>
+            </div>
+        </section>
+
+        <section id="sec-vcs" class="fade-in max-w-5xl mx-auto hidden">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-white mb-3">APRECOMM VCS: The Core ACS Engine</h2>
+                <p class="text-slate-400 text-lg">This is where we outclass local competitors in pure infrastructure capabilities. The Virtual Configuration Server (VCS) provides carrier-grade security, enterprise scalability, and modern protocols.</p>
+            </header>
+
+            <div class="flex flex-col lg:flex-row gap-6">
+                <div class="w-full lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto hide-scroll pr-2" id="vcs-grid">
+                </div>
+                <div class="w-full lg:w-1/2">
+                    <div id="vcs-detail-panel" class="bg-aprecomm-bgPanel border border-slate-700 rounded-2xl p-6 h-full shadow-lg flex flex-col justify-center min-h-[400px] sticky top-4">
+                        <div class="text-center text-slate-500">
+                            <span class="text-5xl block mb-4">👈</span>
+                            <p class="font-medium">Select a VCS feature on the left to reveal the killer argument.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-vwe" class="fade-in max-w-5xl mx-auto hidden">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-white mb-3">APRECOMM VWE: Edge AI Agent</h2>
+                <p class="text-slate-400 text-lg">The Virtual Wireless Expert (VWE) is our ultimate business differentiator. While Tier 1s require complex coding and local Tier 3s rely on human chart reading, our embedded AI acts autonomously at the network edge.</p>
+            </header>
+
+            <div class="flex flex-col lg:flex-row gap-6">
+                <div class="w-full lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto hide-scroll pr-2" id="vwe-grid">
+                </div>
+                <div class="w-full lg:w-1/2">
+                    <div id="vwe-detail-panel" class="bg-aprecomm-bgPanel border border-slate-700 rounded-2xl p-6 h-full shadow-lg flex flex-col justify-center min-h-[400px] border-t-4 border-t-aprecomm-blue sticky top-4">
+                        <div class="text-center text-slate-500">
+                            <span class="text-5xl block mb-4">👈</span>
+                            <p class="font-medium">Select a VWE feature on the left to see its direct impact on ISP ROI.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-battle" class="fade-in max-w-6xl mx-auto hidden">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-white mb-3">Battlecards: Direct Comparison</h2>
+                <p class="text-slate-400 text-lg">Select the competitor tier your client is evaluating. This dynamic visualization immediately highlights our structural and AI superiority, equipping you with the exact counter-argument.</p>
+            </header>
+
+            <div class="bg-aprecomm-bgPanel rounded-3xl p-4 md:p-6 border border-slate-700 shadow-lg mb-6 flex flex-wrap gap-3">
+                <button onclick="loadBattle('tier1')" id="btn-tier1" class="battle-btn flex-1 min-w-[200px] bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl transition-colors border border-transparent">
+                    🆚 Global Tier 1 (Axiros/AVSystem)
+                </button>
+                <button onclick="loadBattle('anlix')" id="btn-anlix" class="battle-btn flex-1 min-w-[200px] bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl transition-colors border border-transparent">
+                    🆚 Local Tier 2 (Anlix/Flashman)
+                </button>
+                <button onclick="loadBattle('tier3')" id="btn-tier3" class="battle-btn flex-1 min-w-[200px] bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl transition-colors border border-transparent">
+                    🆚 Local Tier 3 (IXC, Made4Graph)
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                
+                <div class="bg-aprecomm-bgPanel p-6 rounded-3xl border border-slate-700 shadow-lg w-full flex flex-col items-center justify-center min-h-[450px]">
+                    <h3 class="text-lg font-bold text-white mb-4 w-full text-center" id="chart-title">Capabilities Analysis</h3>
+                    <div class="w-full flex-1 flex items-center justify-center">
+                        <div class="chart-container">
+                            <canvas id="battleChart"></canvas>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 text-center">Dynamic chart comparing native infrastructure, automation, and AI resources.</p>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                    <div class="bg-slate-800 border-l-4 border-slate-500 p-6 rounded-r-2xl shadow-md">
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">What They Have (Strengths)</h4>
+                        <p id="battle-pros" class="text-slate-200 text-lg font-medium leading-relaxed">
+                            Select a competitor above to view the detailed analysis.
+                        </p>
+                    </div>
+
+                    <div class="bg-aprecomm-bgPanel border-l-4 border-aprecomm-orange p-6 rounded-r-2xl shadow-lg shadow-orange-900/20">
+                        <h4 class="text-sm font-bold text-aprecomm-orange uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <span>🥊</span> How to Win (The Killer Argument)
+                        </h4>
+                        <div id="battle-cons" class="text-slate-100 text-lg leading-relaxed">
+                            Awaiting selection...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- State Management & Data ---
+        const vcsData = [
+            { id: 'vcs-1', icon: '⚡', title: 'Modern Protocols', subtitle: 'TR-369 (USP) Native', content: '<strong>The End of Delay:</strong> While local competitors (Anlix, IXC) rely purely on legacy TR-069 (slow, reactive polling), VCS natively supports <strong>TR-369 (USP)</strong>. This guarantees continuous, real-time telemetry streaming without overwhelming network bandwidth.' },
+            { id: 'vcs-2', icon: '⚙️', title: 'Policy Engine', subtitle: 'Dynamic Bulk Configs', content: '<strong>Operational Superiority:</strong> Our policies are not simple "task schedulers". We feature a dynamic <em>Policy Engine</em> that applies massive configurations based on logical rules, network events, tags, and groups, enabling genuine network automation.' },
+            { id: 'vcs-3', icon: '🛡️', title: 'Disaster Prevention', subtitle: 'Automatic Rollback', content: '<strong>The Killer Argument:</strong> During massive firmware upgrades or bulk changes, VCS features <strong>Automatic Rollback</strong>. If an update fails, the CPE safely reverts. Local competitors demand <em>manual</em> rollbacks, risking "bricking" thousands of routers overnight.' },
+            { id: 'vcs-4', icon: '📋', title: 'Audit & Governance', subtitle: 'Detailed Timestamps', content: '<strong>Enterprise-Grade Compliance:</strong> VCS meticulously logs <strong>who</strong> queried data and <strong>who</strong> edited parameters, with <strong>exact dates and times</strong>. This level of security and IT governance is entirely ignored by Tier 3 tools.' },
+            { id: 'vcs-5', icon: '📊', title: 'Data Intelligence', subtitle: 'Excel Mass Export', content: '<strong>Own Your Data:</strong> Allows ISPs to execute massive downloads of existing configurations and base parameters, generating easily exportable reports for <strong>Excel (XLS/CSV)</strong>. Essential for business intelligence and base audits.' },
+            { id: 'vcs-6', icon: '🩺', title: 'Deep Diagnostics', subtitle: 'TR-181 & TR-143', content: '<strong>Absolute Control:</strong> Granular access to the full TR-181 Device:2 tree and the ability to run multi-threaded L2/L3 network tests (Ping, Path Trace) directly from the customer\'s CPE equipment.' },
+            { id: 'vcs-7', icon: '🚀', title: 'ZTP Provisioning', subtitle: 'Fail-safe Zero-Touch', content: '<strong>Instant Onboarding:</strong> Secure Zero-Touch Provisioning using robust templates that prevent CPE lockouts. Native support for Dual-stack USP/TR-069 ensures compatibility with both legacy hardware and next-gen routers.' },
+            { id: 'vcs-8', icon: '🌐', title: 'Advanced L2-L4 Visbility', subtitle: 'CGNAT, IPv6 & VLANs', content: '<strong>Beyond Wi-Fi:</strong> VCS identifies per-CPE CGNAT port exhaustion and enables mass configuration of IPv6, VLANs, and ACL rules. Essential diagnostic visibility for advanced NOC teams.' },
+            { id: 'vcs-9', icon: '🔌', title: 'Integration Flexibility', subtitle: 'Complete REST API', content: '<strong>Open Ecosystem:</strong> Unlike Tier 3 systems permanently locked to specific local ERPs, VCS uses an <em>API-First</em> approach. This guarantees seamless integration with any global BSS/OSS, ERP, or AI Chatbot workflow.' }
+        ];
+
+        const vweData = [
+            { id: 'vwe-1', icon: '🔮', title: 'Predictive Maintenance', subtitle: 'Act Before the Call', content: 'VWE learns SNR, Rx/Tx, and Uptime patterns. It predicts failures before the subscriber notices, <strong>reducing technical truck rolls by up to 40%</strong>. Systems like Anlix are 100% reactive—they only alert you after the client is already furious.' },
+            { id: 'vwe-2', icon: '🪄', title: 'Self-Healing Wi-Fi', subtitle: 'Autonomous Edge RF', content: 'Our embedded AI dynamically adjusts channels, power, and client connections to escape interference in real-time. Competitors require NOC operators to manually click dashboards to change channels, bleeding operational costs.' },
+            { id: 'vwe-3', icon: '🎮', title: 'App-Level QoE', subtitle: 'Gaming & Video Metrics', content: 'We don\'t just measure generic "signal strength". Using Edge DPI, VWE calculates VoIP MOS, specific <strong>Gaming latency</strong>, and drops in <strong>Video Streaming</strong>. We know if the customer\'s game is lagging. Competitors are completely blind to actual user experience.' },
+            { id: 'vwe-4', icon: '💬', title: 'Root Cause Analysis', subtitle: 'Express RCA in Text', content: 'The platform correlates billions of data points and delivers the diagnosis in <strong>plain natural text</strong> (e.g., "Interference issue on channel 6 at 2.4GHz network"). This drastically cuts MTTR by removing the need for Level 1 support to interpret complex charts.' },
+            { id: 'vwe-5', icon: '🧲', title: 'Sticky Client Detection', subtitle: 'Forced Roaming (11v/k)', content: 'Machine Learning identifies devices "stuck" to distant routers and autonomously enforces roaming via 802.11v/k. This completely eliminates the historic "slow Wi-Fi in the bedroom" complaints that legacy ACS simply cannot fix.' },
+            { id: 'vwe-6', icon: '💰', title: 'Sales Triggers', subtitle: 'Proactive Upselling', content: 'Our AI works for your sales team: it correlates historical low-signal data, bandwidth bottlenecks, and usage habits to automatically suggest the sale of an additional Mesh node or a fiber plan upgrade. Turn your support center into a revenue generator.' }
+        ];
+
+        const battleData = {
+            tier1: {
+                name: 'Global Tier 1 (Axiros/AVSystem)',
+                color: '#3b82f6', /* Blue for Tier 1 */
+                pros: 'Massive global scale, highly robust ACS engines, strong BBF compliance, and capable of handling millions of standard TR-069/USP devices.',
+                cons: 'They are legacy giants built around pure ACS logic. <strong>They lack our embedded Edge AI (VWE).</strong> They do not offer autonomous Machine Learning Self-Healing or App-level QoE out-of-the-box without highly expensive, complex custom SDK development. Aprecomm delivers Tier 1 infrastructure <em>combined</em> with plug-and-play Edge AI.',
+                stats: [2, 3, 10, 10, 2] // AI, Automacao, Escala, Seguranca, QoE
+            },
+            anlix: {
+                name: 'Local Tier 2 (Anlix / Flashman)',
+                color: '#facc15', /* yellow */
+                pros: 'Very user-friendly dashboard for Level 1 technicians and native integrations with local Brazilian ERP systems.',
+                cons: 'They are <strong>purely reactive and based entirely on legacy TR-069</strong>. They possess no real embedded AI (just pretty graphs). <strong>Warning: If they make a mistake in a bulk update, there is NO automatic rollback</strong> (high risk of bricking networks overnight). No real-time USP support. Zero visibility into Gaming/Video QoE.',
+                stats: [2, 5, 6, 2, 3]
+            },
+            tier3: {
+                name: 'Local Tier 3 (IXC, Made4Graph)',
+                color: '#ef4444', /* red */
+                pros: 'Low cost, native integration with their own proprietary ERPs, and basic Zero-Touch Provisioning.',
+                cons: 'These are <strong>rigid, bare-bones reading tools</strong> focused only on basic parameter polling. They feature <strong>Zero Artificial Intelligence</strong>, zero prediction, zero Wi-Fi automation, and rely 100% on human intervention. They cannot handle the protocol bottlenecks of massive ISP growth. They completely lack deep audit logs and clean data exportation.',
+                stats: [0, 2, 4, 0, 0]
+            },
+            aprecomm: {
+                name: 'Aprecomm (VCS+VWE)',
+                color: '#FF6600', /* Aprecomm Orange */
+                stats: [10, 10, 10, 10, 10]
+            }
+        };
+
+        let battleChartInstance = null;
+
+        // --- Core Interaction Functions ---
+
+        function nav(sectionId) {
+            // Update UI Active States
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById(`nav-${sectionId}`).classList.add('active');
+
+            // Render Grids and auto-select first item
+            if(sectionId === 'vcs') {
+                if(document.getElementById('vcs-grid').innerHTML.trim() === '') {
+                    renderGrid('vcs');
+                    setTimeout(() => showDetail('vcs', vcsData[0].id), 50);
+                }
+            }
+            if(sectionId === 'vwe') {
+                if(document.getElementById('vwe-grid').innerHTML.trim() === '') {
+                    renderGrid('vwe');
+                    setTimeout(() => showDetail('vwe', vweData[0].id), 50);
+                }
+            }
+            
+            // Default Battlecard view (Now defaults to Tier 1 to show dominance)
+            if(sectionId === 'battle' && !battleChartInstance) loadBattle('tier1');
+        }
+
+        function renderGrid(type) {
+            const container = document.getElementById(`${type}-grid`);
+            const data = type === 'vcs' ? vcsData : vweData;
+            
+            container.innerHTML = data.map(item => `
+                <div onclick="showDetail('${type}', '${item.id}')" id="card-${item.id}" class="feature-card cursor-pointer rounded-xl p-4 flex flex-col items-start border">
+                    <div class="text-2xl mb-2">${item.icon}</div>
+                    <h4 class="font-bold text-white text-sm leading-tight">${item.title}</h4>
+                    <p class="text-xs text-slate-400 mt-1">${item.subtitle}</p>
+                </div>
+            `).join('');
+        }
+
+        function showDetail(type, id) {
+            // Update selected visual state
+            document.querySelectorAll(`#${type}-grid .feature-card`).forEach(c => c.classList.remove('selected'));
+            const card = document.getElementById(`card-${id}`);
+            if(card) card.classList.add('selected');
+
+            // Find data and update panel
+            const data = (type === 'vcs' ? vcsData : vweData).find(d => d.id === id);
+            if(!data) return;
+            const panel = document.getElementById(`${type}-detail-panel`);
+            
+            const accentColor = type === 'vcs' ? 'text-aprecomm-orange' : 'text-aprecomm-blue';
+
+            panel.innerHTML = `
+                <div class="fade-in flex flex-col h-full">
+                    <div class="text-5xl mb-4">${data.icon}</div>
+                    <h3 class="text-2xl font-bold text-white mb-1">${data.title}</h3>
+                    <h4 class="text-sm font-semibold ${accentColor} uppercase tracking-wider mb-6">${data.subtitle}</h4>
+                    <div class="text-slate-300 text-lg leading-relaxed flex-1">
+                        ${data.content}
+                    </div>
+                </div>
+            `;
+        }
+
+        function copyPitch() {
+            const text = "Mr. Service Provider, local Tier 2 or ERP-native tools only show you the past—reactive charts that force your team into manual, risky interventions. Aprecomm is a Tier 1 Global Sovereign Platform. We deliver end-to-end control from your OLT to the user's App. Our VCS engine executes massive policies with fail-safe automatic rollbacks and deep compliance audits. Meanwhile, our VWE Edge AI dynamically self-heals Wi-Fi interference and predicts failures before your subscriber ever picks up the phone to complain. We don't just monitor your network; we automate your operations.";
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Pitch copied to clipboard!");
+            });
+        }
+
+        function loadBattle(compId) {
+            // Update button styles
+            document.querySelectorAll('.battle-btn').forEach(btn => {
+                btn.classList.remove('border-aprecomm-orange', 'bg-slate-700', 'text-aprecomm-orange');
+                btn.classList.add('border-transparent', 'bg-slate-800', 'text-slate-300');
+            });
+            const activeBtn = document.getElementById(`btn-${compId}`);
+            activeBtn.classList.remove('border-transparent', 'bg-slate-800', 'text-slate-300');
+            activeBtn.classList.add('border-aprecomm-orange', 'bg-slate-700', 'text-aprecomm-orange');
+
+            const comp = battleData[compId];
+            const apre = battleData.aprecomm;
+
+            // Update Text content
+            document.getElementById('battle-pros').innerHTML = comp.pros;
+            document.getElementById('battle-cons').innerHTML = comp.cons;
+            document.getElementById('chart-title').innerHTML = `Aprecomm vs. ${comp.name}`;
+
+            // Update Chart
+            updateChart(comp, apre);
+        }
+
+        function updateChart(compData, apreData) {
+            const ctx = document.getElementById('battleChart').getContext('2d');
+            
+            const dataObj = {
+                labels: ['AI & Prediction', 'Automation (Self-Healing)', 'Scalability / Protocols', 'Security (Rollback / Logs)', 'Real-time QoE'],
+                datasets: [
+                    {
+                        label: 'Aprecomm',
+                        data: apreData.stats,
+                        backgroundColor: 'rgba(255, 102, 0, 0.2)', // Orange with opacity
+                        borderColor: '#FF6600',
+                        pointBackgroundColor: '#FF6600',
+                        pointBorderColor: '#1e293b',
+                        pointHoverBackgroundColor: '#1e293b',
+                        pointHoverBorderColor: '#FF6600',
+                        borderWidth: 3
+                    },
+                    {
+                        label: compData.name,
+                        data: compData.stats,
+                        backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                        borderColor: compData.color,
+                        pointBackgroundColor: compData.color,
+                        pointBorderColor: '#1e293b',
+                        pointHoverBackgroundColor: '#1e293b',
+                        pointHoverBorderColor: compData.color,
+                        borderWidth: 2,
+                        borderDash: [5, 5]
+                    }
+                ]
+            };
+
+            const config = {
+                type: 'radar',
+                data: dataObj,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 12 }, color: '#cbd5e1' } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return context.dataset.label + ': ' + context.raw + '/10'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            pointLabels: {
+                                font: { family: 'Inter', size: 11, weight: '600' },
+                                color: '#94a3b8',
+                                callback: function(word) {
+                                    if(word.length > 16 && word.includes(' ')) {
+                                        return word.split(' ');
+                                    }
+                                    return word;
+                                }
+                            },
+                            ticks: { display: false, min: 0, max: 10, stepSize: 2 }
+                        }
+                    }
+                }
+            };
+
+            if (battleChartInstance) {
+                battleChartInstance.data = dataObj;
+                battleChartInstance.options.scales.r.angleLines.color = 'rgba(255, 255, 255, 0.1)'; // Ensure dark mode lines
+                battleChartInstance.update();
+            } else {
+                battleChartInstance = new Chart(ctx, config);
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            nav('pitch');
+        });
+
+    </script>
+</body>
+</html>
